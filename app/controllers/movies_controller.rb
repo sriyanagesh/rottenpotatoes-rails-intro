@@ -17,22 +17,23 @@ class MoviesController < ApplicationController
     #HW2
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
 
-    session[:ratings] ||= Hash.new
-    session[:sort] ||= Hash.new 
+    session[:selected_ratings] ||= Hash.new
+    session[:selected_order] ||= Hash.new 
     
     if(params.size == 2)
-      params[:sort]   ||= session[:sort] 
-      params[:ratings] ||= session[:ratings]
+      params[:order]   ||= session[:selected_order] 
+      params[:ratings] ||= session[:selected_ratings]
       redirect_to movies_path(params) and return
     end
-    
-    if !params[:ratings].nil?
-      session[:ratings] = params[:ratings]
+   
+    @rat = params[:ratings] 
+    if !@rat.nil?
+      session[:selected_ratings] = @rat 
     elsif !params[:commit].nil? 
-      session[:ratings] = Hash.new
+      session[:selected_ratings] = Hash.new
     end
     
-    @selected_ratings = session[:ratings]  
+    @selected_ratings = session[:selected_ratings]  
     
     if params[:ratings]
       @checked_ratings = params[:ratings]
