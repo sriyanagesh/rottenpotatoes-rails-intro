@@ -11,8 +11,37 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @sort_parm = params[:sort_parm]
-    @movies = Movie.order(params[:sort_parm])
+    @sort = params[:sort]
+    @movies = Movie.order(params[:sort])
+
+    #HW2
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+
+    session[:ratings] ||= Hash.new
+    session[:sort] ||= Hash.new 
+    
+    if(params.size == 2)
+      params[:sort]   ||= session[:sort] 
+      params[:ratings] ||= session[:ratings]
+      redirect_to movies_path(params) and return
+    end
+    
+    @rat = params[:ratings]
+    if !@rat.nil?
+      session[:ratings] = @rat 
+    elsif !params[:commit].nil? 
+      session[:ratings] = Hash.new
+    end
+    
+    @selected_ratings = session[:ratings]  
+    
+    if params[:ratings]
+      @checked_ratings = params[:ratings]
+      @movies = Movie.where("rating IN (?)", @checked_ratings)
+    else
+      @movies = Movie.order(params[:sort]) 
+    end
+
   end
 
   def new
