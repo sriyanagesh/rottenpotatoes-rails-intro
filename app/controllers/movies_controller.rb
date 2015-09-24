@@ -17,29 +17,33 @@ class MoviesController < ApplicationController
     #HW2
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
 
-    session[:ratings] ||= Hash.new
-    session[:sort] ||= Hash.new 
+    session[:selected_ratings] ||= Hash.new
+    session[:selected_order] ||= ""
+    @classHilite = {"title" =>"","release_date"=>""}
     
     if(params.size == 2)
-      params[:sort]   ||= session[:sort] 
-      params[:ratings] ||= session[:ratings]
+      params[:order]   ||= session[:selected_order] 
+      params[:ratings] ||= session[:selected_ratings]
       redirect_to movies_path(params) and return
     end
     
-    @rat = params[:ratings]
-    if !@rat.nil?
-      session[:ratings] = @rat 
+    if !params[:ratings].nil?
+      session[:selected_ratings] = params[:ratings]
     elsif !params[:commit].nil? 
-      session[:ratings] = Hash.new
+      session[:selected_ratings] = Hash.new
     end
     
-    @selected_ratings = session[:ratings]  
-   
-    if !params[:sort].nil?
-      session[:ratings] = params[:sort]
+    @selected_ratings = session[:selected_ratings]  
+    
+    if !params[:order].nil?
+      session[:selected_order] = params[:order]
     end
     
-    order = (session[:ratings] == "")?"title":session[:ratngs] 
+    order = (session[:selected_order] == "")?"title":session[:selected_order]
+    if session[:selected_order] != ""
+      @classHilite = {session[:selected_order]=>"hilite"}
+    end
+ 
     if params[:ratings]
       @checked_ratings = params[:ratings]
       @movies = Movie.where("rating IN (?)", @checked_ratings)
