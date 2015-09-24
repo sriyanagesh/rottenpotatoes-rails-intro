@@ -18,8 +18,8 @@ class MoviesController < ApplicationController
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
 
     session[:selected_ratings] ||= Hash.new
-    session[:selected_order] ||= Hash.new 
-#    @classHilite = {"title" =>"","release_date"=>""}
+    session[:selected_order] ||= ""
+    @classHilite = {"title" =>"","release_date"=>""}
     
     if(params.size == 2)
       params[:order]   ||= session[:selected_order] 
@@ -35,14 +35,14 @@ class MoviesController < ApplicationController
     
     @selected_ratings = session[:selected_ratings]  
     
-#    if !params[:order].nil?
-#      session[:selected_order] = params[:order]
-#    end
+    if !params[:order].nil?
+      session[:selected_order] = params[:order]
+    end
     
-#    order = (session[:selected_order] == "")?"title":session[:selected_order]
-#    if session[:selected_order] != ""
-#      @classHilite = {session[:selected_order]=>"hilite"}
-#    end
+    order = (session[:selected_order] == "")?"title":session[:selected_order]
+    if session[:selected_order] != ""
+      @classHilite = {session[:selected_order]=>"hilite"}
+    end
  
     if params[:ratings]
       @checked_ratings = params[:ratings]
