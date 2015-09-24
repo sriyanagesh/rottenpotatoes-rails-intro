@@ -20,6 +20,26 @@ class MoviesController < ApplicationController
     session[:ratings] ||= Hash.new
     session[:sort] ||= Hash.new 
     
+    if(params.size == 2)
+      params[:sort]   ||= session[:sort] 
+      params[:ratings] ||= session[:ratings]
+      redirect_to movies_path(params) and return
+    end
+    
+    @rat = params[:ratings]
+    if !@rat.nil?
+      session[:ratings] = @rat 
+    elsif !params[:commit].nil? 
+      session[:ratings] = Hash.new
+    end
+    
+    @selected_ratings = session[:ratings]  
+   
+    if !params[:sort].nil?
+      session[:ratings] = params[:sort]
+    end
+    
+    order = (session[:ratings] == "")?"title":session[:ratngs] 
     if params[:ratings]
       @checked_ratings = params[:ratings]
       @movies = Movie.where("rating IN (?)", @checked_ratings)
